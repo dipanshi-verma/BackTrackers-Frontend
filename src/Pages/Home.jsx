@@ -1,11 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function Home() {
-
-  // Function to handle the "Report Lost Item" button when clicked and will redirect to lost item reporting page
-  const handleLostItemClick = () => {
-    
-  }
   return (
     // Main container for the entire landing page content.
     // Uses flexbox to arrange content vertically and takes at least the full viewport height.
@@ -26,21 +22,21 @@ function Home() {
           </p>
           {/* Call to action buttons */}
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button
-              className="bg-indigo-600 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg
-                         hover:bg-indigo-700 hover:shadow-xl transition-all duration-300 ease-in-out
-                         focus:outline-none focus:ring-4 focus:ring-indigo-300"
-               onClick={handleLostItemClick}
-            >
-              Report Lost Item
-            </button>
-            <button
+            <button>
+                  <Link to="/report-lost" // This is the key! It tells React Router where to navigate.
+                    className="bg-indigo-600 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg
+                  hover:bg-indigo-700 hover:shadow-xl transition-all duration-300 ease-in-out
+                  focus:outline-none focus:ring-4 focus:ring-indigo-300 inline-block">
+                    Report Lost Item
+                  </Link>
+              </button>
+            <button>
+              <Link to="/list-items"  // This is linking to the  Items page
               className="bg-white text-indigo-600 border border-indigo-600 px-8 py-3 rounded-full text-lg font-semibold shadow-lg
                          hover:bg-indigo-50 hover:shadow-xl transition-all duration-300 ease-in-out
-                         focus:outline-none focus:ring-4 focus:ring-indigo-300"
-              onClick={() => console.log('Find Item clicked')}
-            >
-              Find an Item
+                         focus:outline-none focus:ring-4 focus:ring-indigo-300">
+              Item List
+              </Link>
             </button>
           </div>
         </div>
@@ -153,21 +149,21 @@ function Home() {
           </p>
           {/* Duplicate call to action buttons for easy access */}
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button
-              className="bg-white text-indigo-700 px-8 py-3 rounded-full text-lg font-semibold shadow-lg
-                         hover:bg-indigo-100 hover:shadow-xl transition-all duration-300 ease-in-out
-                         focus:outline-none focus:ring-4 focus:ring-indigo-300"
-              onClick={() => console.log('Report Lost Item clicked')}
-            >
-              Report Your Item
+            <button>
+               <Link to="/report-lost" 
+                    className="bg-indigo-600 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg
+                  hover:bg-indigo-700 hover:shadow-xl transition-all duration-300 ease-in-out
+                  focus:outline-none focus:ring-4 focus:ring-indigo-300 inline-block">
+                    Report Lost Item
+                  </Link>
             </button>
-            <button
+            <button>
+              <Link to="/found" 
               className="bg-transparent border border-white text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg
                          hover:bg-white hover:text-indigo-700 transition-all duration-300 ease-in-out
-                         focus:outline-none focus:ring-4 focus:ring-indigo-300"
-              onClick={() => console.log('Browse Found Items clicked')}
-            >
-              Browse Found Items
+                         focus:outline-none focus:ring-4 focus:ring-indigo-300">
+              Report Found Items
+              </Link>
             </button>
           </div>
         </div>

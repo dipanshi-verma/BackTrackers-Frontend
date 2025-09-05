@@ -19,6 +19,7 @@ const FoundItemPage = () => {
           {/* The form for reporting a lost item */}
           <form className="w-full max-w-lg">
             {/* Item Name input field */}
+
             <div className="mb-6">
               <label className="block text-gray-800 text-base font-semibold mb-2" htmlFor="itemName">
                 Item Name
@@ -41,6 +42,7 @@ const FoundItemPage = () => {
                 id="description"
                 placeholder="Provide a detailed description of the item, including color, brand, unique features, where you lost, etc."
                 rows="5" 
+                
                 className="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-800 leading-tight
                            focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-y transition-all duration-200"
               ></textarea>

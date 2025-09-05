@@ -6,12 +6,14 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
+    { path: "/Register", label: "Register" },
     { path: "/", label: "Home" },
     { path: "/about", label: "About" },
     { path: "/ListItems", label: "ListItems" },
     { path: "/contact", label: "Contact" },
     { path: "/faq", label: "FAQ", special: true },
   ];
+  
 
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-md transition-all">

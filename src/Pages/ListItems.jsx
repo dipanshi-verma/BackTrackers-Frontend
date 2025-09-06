@@ -1,13 +1,30 @@
 // ListItems.jsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+// The UserContext from your teammate's authentication system
+// You'll need to create a context file to share this data across your app
+const UserContext = React.createContext(null); // Placeholder for your actual context
+
 const ListItems = () => {
+    const navigate = useNavigate();
     const [lostItems, setLostItems] = useState([]);
     const [foundItems, setFoundItems] = useState([]);
     const [activeTab, setActiveTab] = useState('lost');
     const [message, setMessage] = useState({ type: '', text: '' });
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentUser, setCurrentUser] = useState({ id: 'dummy-id', role: 'user' }); // Placeholder for logged-in user state
+
+    // Simulate fetching user from context/local storage
+    useEffect(() => {
+        // In your actual app, you would fetch the user's token from localStorage
+        // and get their ID and role from it.
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        if (storedUser) {
+            setCurrentUser(storedUser);
+        }
+    }, []);
 
     const fetchItems = async () => {
         try {
@@ -30,12 +47,18 @@ const ListItems = () => {
     };
 
     const handleDelete = async (itemId, type) => {
+        if (!currentUser) {
+            setMessage({ type: 'error', text: 'You must be logged in to delete an item.' });
+            return navigate('/login');
+        }
         if (!window.confirm("Are you sure you want to delete this item?")) {
             return;
         }
         try {
             await axios.delete(`http://localhost:5000/api/${type}-items/${itemId}`, {
-                headers: { 'x-user-id': "60c72b2f9c87f10015b6d7a1" }
+                headers: { 
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` 
+                }
             });
             setMessage({ type: 'success', text: 'Item deleted successfully.' });
             fetchItems();
@@ -46,12 +69,18 @@ const ListItems = () => {
     };
 
     const handleMarkAsFound = async (itemId) => {
+        if (!currentUser) {
+            setMessage({ type: 'error', text: 'You must be logged in to mark an item as found.' });
+            return navigate('/login');
+        }
         if (!window.confirm("Are you sure you want to mark this item as found? It will be moved to the Found Items list.")) {
             return;
         }
         try {
             await axios.put(`http://localhost:5000/api/lost-items/${itemId}/mark-found`, {}, {
-                headers: { 'x-user-id': "60c72b2f9c87f10015b6d7a1" }
+                headers: { 
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` 
+                }
             });
             setMessage({ type: 'success', text: 'Item marked as found successfully!' });
             fetchItems();
@@ -62,49 +91,57 @@ const ListItems = () => {
     };
 
     // This is a placeholder for a more complex edit flow using a modal.
-    // For now, it will simply log the item data to the console.
     const handleEdit = (item) => {
+        if (!currentUser) {
+            setMessage({ type: 'error', text: 'You must be logged in to edit an item.' });
+            return navigate('/login');
+        }
         console.log('Edit button clicked for item:', item);
         // In a real application, you'd open an edit modal here
         // and pre-populate the form fields with `item`'s data.
     };
 
-    const renderItem = (item, type) => (
-        <div key={item._id} className="bg-white rounded-lg shadow-md p-6 flex flex-col md:flex-row items-start md:items-center justify-between transition-transform duration-300 hover:scale-[1.01] border-l-4 border-l-4 border-l-blue-600">
-            <div className="flex-grow">
-                <h4 className="font-bold text-xl text-gray-800 mb-2">{item.name}</h4>
-                <p className="text-gray-600 mb-2">{item.description}</p>
-                <div className="flex flex-wrap gap-2">
-                    {item.images && item.images.length > 0 && item.images.map((image, index) => (
-                        <img key={index} src={`http://localhost:5000${image}`} alt={item.name} className="w-24 h-24 object-cover rounded-md" />
-                    ))}
+    const renderItem = (item, type) => {
+        const canModify = currentUser && (currentUser.id === (type === 'lost' ? item.postedBy : item.foundBy) || currentUser.role === 'admin');
+
+        return (
+            <div key={item._id} className="bg-white rounded-lg shadow-md p-6 flex flex-col md:flex-row items-start md:items-center justify-between transition-transform duration-300 hover:scale-[1.01] border-l-4 border-l-4 border-l-blue-600">
+                <div className="flex-grow">
+                    <h4 className="font-bold text-xl text-gray-800 mb-2">{item.name}</h4>
+                    <p className="text-gray-600 mb-2">{item.description}</p>
+                    <div className="flex flex-wrap gap-2">
+                        {item.images && item.images.length > 0 && item.images.map((image, index) => (
+                            <img key={index} src={`http://localhost:5000${image}`} alt={item.name} className="w-24 h-24 object-cover rounded-md" />
+                        ))}
+                    </div>
+                </div>
+                <div className="mt-4 md:mt-0 md:ml-6 text-right flex-shrink-0">
+                    <p className="text-sm text-gray-500">
+                        {type === 'lost' ? `Lost on: ${new Date(item.dateLost).toLocaleDateString()}` : `Found on: ${new Date(item.dateFound).toLocaleDateString()}`}
+                    </p>
+                    <p className="text-sm text-gray-500">Contact: {item.contactInfo}</p>
+                    {canModify && type === 'lost' && (
+                        <button
+                            onClick={() => handleMarkAsFound(item._id)}
+                            className="mt-2 bg-green-500 text-white px-3 py-1 rounded-md text-sm hover:bg-green-600 transition-colors"
+                        >
+                            Mark as Found
+                        </button>
+                    )}
+                    {canModify && (
+                        <div className="mt-2 flex justify-end gap-2">
+                            <button onClick={() => handleDelete(item._id, type)} className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition-colors">
+                                Delete
+                            </button>
+                            <button onClick={() => handleEdit(item)} className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600 transition-colors">
+                                Edit
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
-            <div className="mt-4 md:mt-0 md:ml-6 text-right flex-shrink-0">
-                <p className="text-sm text-gray-500">
-                    {type === 'lost' ? `Lost on: ${new Date(item.dateLost).toLocaleDateString()}` : `Found on: ${new Date(item.dateFound).toLocaleDateString()}`}
-                </p>
-                <p className="text-sm text-gray-500">Contact: {item.contactInfo}</p>
-                {type === 'lost' && (
-                    <button
-                        onClick={() => handleMarkAsFound(item._id)}
-                        className="mt-2 bg-green-500 text-white px-3 py-1 rounded-md text-sm hover:bg-green-600 transition-colors"
-                    >
-                        Mark as Found
-                    </button>
-                )}
-                <div className="mt-2 flex justify-end gap-2">
-                    <button onClick={() => handleDelete(item._id, type)} className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition-colors">
-                        Delete
-                    </button>
-                    {/* The corrected onClick handler is here */}
-                    <button onClick={() => handleEdit(item)} className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600 transition-colors">
-                        Edit
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
+        );
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 py-10 px-4">

@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom"; 
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { path: "/Register", label: "Register" },
-    { path: "/", label: "Home" },
+    { path: "/home" , label: "Home" },
+     { path: "/register", label: "Register" },
     { path: "/about", label: "About" },
-    { path: "/ListItems", label: "ListItems" },
+    { path: "/list-items", label: "ListItems" },
     { path: "/contact", label: "Contact" },
-    { path: "/faq", label: "FAQ", special: true },
+    { path: "/chat", label: "ChatRoom", special: true },
   ];
   
 

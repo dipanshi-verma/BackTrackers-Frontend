@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Upload, Image as ImageIcon, ArrowLeft } from "lucide-react";
+import { Upload, ArrowLeft } from "lucide-react";
 
 const ReportLostItemPage = () => {
   const [itemName, setItemName] = useState("");
@@ -10,10 +10,37 @@ const ReportLostItemPage = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const previews = files.map((file) => URL.createObjectURL(file));
+  // New state to manage drag-and-drop visual feedback
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Function to handle files, used by both input and drop
+  const handleFiles = (files) => {
+    // Check if the file is an image
+    const validFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+    const previews = validFiles.map((file) => URL.createObjectURL(file));
     setImages(previews);
+  };
+
+  const handleImageUpload = (e) => {
+    handleFiles(e.target.files);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault(); // This is crucial for enabling a drop
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    // Access the dropped files from the event's dataTransfer property
+    const droppedFiles = e.dataTransfer.files;
+    handleFiles(droppedFiles);
   };
 
   const handleSubmit = (e) => {
@@ -35,14 +62,10 @@ const ReportLostItemPage = () => {
         transition={{ duration: 0.4 }}
         className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-2xl border border-gray-200"
       >
-        {/* Page Title */}
         <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-8 text-center">
           Report Lost Item
         </h1>
-
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Item Name */}
           <div>
             <label className="block text-gray-800 font-semibold mb-2" htmlFor="itemName">
               Item Name <span className="text-red-500">*</span>
@@ -56,8 +79,6 @@ const ReportLostItemPage = () => {
               className="w-full border border-gray-300 rounded-lg py-3 px-4 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
           </div>
-
-          {/* Description */}
           <div>
             <label className="block text-gray-800 font-semibold mb-2" htmlFor="description">
               Description <span className="text-red-500">*</span>
@@ -71,11 +92,17 @@ const ReportLostItemPage = () => {
               className="w-full border border-gray-300 rounded-lg py-3 px-4 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-y"
             ></textarea>
           </div>
-
-          {/* Image Upload */}
           <div>
             <label className="block text-gray-800 font-semibold mb-2">Upload Images</label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition">
+            <div
+              className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition ${
+                isDragging ? "border-indigo-500 bg-indigo-50" : "border-gray-300 hover:bg-gray-50"
+              }`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => document.getElementById('images').click()}
+            >
               <Upload className="w-10 h-10 text-indigo-500 mb-2" />
               <p className="text-gray-500 text-sm">Drag & drop or click to upload</p>
               <input
@@ -101,11 +128,7 @@ const ReportLostItemPage = () => {
               </div>
             )}
           </div>
-
-          {/* Error Message */}
           {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
-
-          {/* Submit */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -115,8 +138,6 @@ const ReportLostItemPage = () => {
             Submit Report
           </motion.button>
         </form>
-
-        {/* Back to Home */}
         <div className="mt-8 text-center">
           <Link
             to="/"

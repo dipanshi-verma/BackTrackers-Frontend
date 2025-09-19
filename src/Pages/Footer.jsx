@@ -23,7 +23,7 @@ function Footer() {
           </ul>
         </div>
         <div>
-          <h3 className="text-xl font-semibold mb-4">Contact</h3>
+          <h3  id = 'contact' className="text-xl font-semibold mb-4">Contact</h3>
           <p className="text-indigo-200">📍 Parul University, Vadodara</p>
           <p className="text-indigo-200">✉️ support@lostfound.com</p>
           <p className="text-indigo-200">📞 +91 998109 4545</p>

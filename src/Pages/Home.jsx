@@ -45,7 +45,7 @@ function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-16 md:py-20 px-4 bg-white text-center shadow-inner">
+      <section  id='how-it-works' className="py-16 md:py-20 px-4 bg-white text-center shadow-inner">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-10">
             How It Works
@@ -95,7 +95,7 @@ function Home() {
       </section>
 
       {/* Key Features Section */}
-      <section className="py-16 md:py-20 px-4 text-center">
+      <section id='key-features' className="py-16 md:py-20 px-4 text-center">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-10">
             Key Features
@@ -274,7 +274,7 @@ function Home() {
       </section>
 
       {/* Final Call to Action Section */}
-      <section className="py-16 md:py-20 px-4 bg-indigo-700 text-white text-center">
+      <section  id='ready-to-get-start' className="py-16 md:py-20 px-4 bg-indigo-700 text-white text-center">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold mb-6">
             Ready to Get Started?

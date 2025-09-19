@@ -45,7 +45,7 @@ function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section  id='how-it-works' className="py-16 md:py-20 px-4 bg-white text-center shadow-inner">
+      <section id='how-it-works' className="py-16 md:py-20 px-4 bg-white text-center shadow-inner">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-10">
             How It Works
@@ -91,6 +91,21 @@ function Home() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* About Us Section */}
+      <section id="about" className="py-16 md:py-20 px-4 text-center">
+        <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-8 md:p-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+            About Us
+          </h2>
+          <p className="text-gray-600 text-lg sm:text-xl leading-relaxed mb-4">
+            Our mission is to build a more connected and responsible college community by simplifying the process of reuniting lost items with their owners. We believe that a small act of kindness, like returning a lost item, can have a huge impact.
+          </p>
+          <p className="text-gray-600 text-lg sm:text-xl leading-relaxed">
+            Lost&Found was created by students, for students, to solve a common problem with a modern, easy-to-use solution. Our platform is a testament to the power of community collaboration and technology in making our campus a better place.
+          </p>
         </div>
       </section>
 
@@ -274,7 +289,7 @@ function Home() {
       </section>
 
       {/* Final Call to Action Section */}
-      <section  id='ready-to-get-start' className="py-16 md:py-20 px-4 bg-indigo-700 text-white text-center">
+      <section id='ready-to-get-start' className="py-16 md:py-20 px-4 bg-indigo-700 text-white text-center">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold mb-6">
             Ready to Get Started?

@@ -41,7 +41,7 @@ const ReportLostItemPage = () => {
         const DUMMY_USER_ID = "60c72b2f9c87f10015b6d7a1"; 
 
         try {
-            await axios.post('http://localhost:5000/api/lost-items', formPayload, {
+            await axios.post('https://backtrackers-backend-ubyo.onrender.com/api/lost-items', formPayload, {
                 headers: {
                     'x-user-id': DUMMY_USER_ID,
                     'Content-Type': 'multipart/form-data',

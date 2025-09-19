@@ -1,28 +1,60 @@
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleScrollToSection = (id) => {
-    // Only scroll if we are on the home page route
-    if (window.location.pathname === '/home' || window.location.pathname === '/') {
+    // Check if we are already on the home page
+    const isHomePage = window.location.pathname === '/' || window.location.pathname === '/home';
+
+    if (isHomePage) {
+      // If we are on the home page, just scroll
       const element = document.getElementById(id);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-        setIsOpen(false); // Close mobile menu after clicking
+        // Offset for fixed header
+        const offset = -70; 
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = element.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition + offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        setIsOpen(false);
       }
-    } 
+    } else {
+      // If we are not on the home page, navigate first and then scroll
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          const offset = -70; 
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = element.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition + offset;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+          setIsOpen(false);
+        }
+      }, 100);
+    }
   };
 
   const navLinks = [
     { path: "/", label: "Home", isScrollLink: false },
     { path: "/register", label: "Register", isScrollLink: false },
     { path: "/list-items", label: "ListItems", isScrollLink: false },
+    { path: "/", label: "About", isScrollLink: true, scrollId: "about" },
     { path: "/", label: "Contact", isScrollLink: true, scrollId: "contact" },
-  
-    { path: "/", label: "About", isScrollLink: true, scrollId: "how-it-works" },
     { path: "/chat", label: "ChatRoom", special: true, isScrollLink: false },
   ];
 
@@ -32,27 +64,21 @@ function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0 text-indigo-600 font-bold text-2xl cursor-pointer">
-            <Link to="/home">Lost&Found</Link>
+            <Link to="/">Lost&Found</Link>
           </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 items-center">
             {navLinks.map(({ path, label, special, isScrollLink, scrollId }) => (
               isScrollLink ? (
-                <a
-                  key={path}
-                  href={path}
-                  onClick={(e) => {
-                    e.preventDefault(); // Prevent default link behavior
-                    handleScrollToSection(scrollId);
-                  }}
-                  className="relative text-gray-600 hover:text-indigo-600 transition duration-300"
+                <button
+                  key={scrollId}
+                  onClick={() => handleScrollToSection(scrollId)}
+                  className="relative text-gray-600 hover:text-indigo-600 transition duration-300 group"
                 >
-                  <span className="group">
-                    {label}
-                    <span className="absolute left-0 -bottom-1 w-0 group-hover:w-full transition-all h-[2px] bg-indigo-600"></span>
-                  </span>
-                </a>
+                  {label}
+                  <span className="absolute left-0 -bottom-1 w-0 group-hover:w-full transition-all h-[2px] bg-indigo-600"></span>
+                </button>
               ) : (
                 <NavLink
                   key={path}
@@ -95,17 +121,13 @@ function Navbar() {
           <div className="flex flex-col space-y-4 p-4">
             {navLinks.map(({ path, label, special, isScrollLink, scrollId }) => (
               isScrollLink ? (
-                <a
-                  key={path}
-                  href={path}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleScrollToSection(scrollId);
-                  }}
-                  className="transition-colors duration-300 text-gray-600 hover:text-indigo-600"
+                <button
+                  key={scrollId}
+                  onClick={() => handleScrollToSection(scrollId)}
+                  className="transition-colors duration-300 text-gray-600 hover:text-indigo-600 text-left w-full"
                 >
                   {label}
-                </a>
+                </button>
               ) : (
                 <NavLink
                   key={path}

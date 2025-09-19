@@ -43,8 +43,6 @@ const FoundItemPage = () => {
     setMessage({ type: '', text: '' }); // Clear previous messages
     setLoading(true);
 
-    const DUMMY_USER_ID = '60c72b2f9c87f10015b6d7a1';
-
     // Use FormData to handle both text and file data
     const formPayload = new FormData();
     formPayload.append('name', formData.name);
@@ -59,12 +57,8 @@ const FoundItemPage = () => {
 
     try {
       // Make the POST request to the backend's found items endpoint
-      await axios.post('http://localhost:5000/api/found-items', formPayload, {
-        headers: {
-          'x-user-id': DUMMY_USER_ID,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      // The headers were removed as they were causing an Unauthorized error
+      await axios.post('https://backtrackers-backend-ubyo.onrender.com/api/found-items', formPayload);
 
       setMessage({
         type: 'success',

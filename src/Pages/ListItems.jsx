@@ -1,4 +1,3 @@
-// ListItems.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -22,8 +21,8 @@ const ListItems = () => {
 
   const fetchItems = async () => {
     try {
-      const lostItemsResponse = await axios.get(`http://localhost:5000/api/lost-items?q=${searchQuery}`);
-      const foundItemsResponse = await axios.get(`http://localhost:5000/api/found-items?q=${searchQuery}`);
+      const lostItemsResponse = await axios.get(`https://backtrackers-backend-ubyo.onrender.com/api/lost-items?q=${searchQuery}`);
+      const foundItemsResponse = await axios.get(`https://backtrackers-backend-ubyo.onrender.com/api/found-items?q=${searchQuery}`);
       setLostItems(lostItemsResponse.data);
       setFoundItems(foundItemsResponse.data);
     } catch (error) {
@@ -49,7 +48,7 @@ const ListItems = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:5000/api/${type}-items/${itemId}`, {
+      await axios.delete(`https://backtrackers-backend-ubyo.onrender.com/api/${type}-items/${itemId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -71,7 +70,7 @@ const ListItems = () => {
       return;
     }
     try {
-      await axios.put(`http://localhost:5000/api/lost-items/${itemId}/mark-found`, {}, {
+      await axios.put(`https://backtrackers-backend-ubyo.onrender.com/api/lost-items/${itemId}/mark-found`, {}, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -104,7 +103,7 @@ const ListItems = () => {
           <div className="flex flex-wrap gap-2 mt-4">
             {item.images && item.images.length > 0 ? (
               item.images.map((image, index) => (
-                <img key={index} src={`http://localhost:5000${image}`} alt={item.name} className="w-24 h-24 object-cover rounded-md" />
+                <img key={index} src={`https://backtrackers-backend-ubyo.onrender.com${image}`} alt={item.name} className="w-24 h-24 object-cover rounded-md" />
               ))
             ) : (
               <div className="w-24 h-24 flex items-center justify-center bg-gray-200 rounded-md text-gray-500">

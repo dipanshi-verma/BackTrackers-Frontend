@@ -9,6 +9,7 @@ import FoundItemPage from './Pages/FoundItemPage.jsx'
 import ReportLostItemPage from './Pages/ReportLostItemPage.jsx'
 import Footer from './Pages/Footer.jsx'
 import ChatRoom from './Pages/ChatRoom.jsx'
+import Dashboard from "./Pages/Dashboard";
 
 
 
@@ -22,8 +23,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/chat" element={<ChatRoom />} />
         <Route path="/report-lost" element={<ReportLostItemPage />} />
-        <Route path="/found" element={<FoundItemPage />} />
+        <Route path="/report-found" element={<FoundItemPage />} />
         <Route path="/list-items" element={<ListItems />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+
       </Routes>
       <Footer/>
     </div>

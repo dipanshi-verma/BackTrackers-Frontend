@@ -311,7 +311,7 @@ function Home() {
             </button>
             <button>
               <Link
-                to="/found"
+                to="/report-found"
                 className="bg-transparent border border-white text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg hover:bg-white hover:text-indigo-700 transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-indigo-300"
               >
                 Report Found Items

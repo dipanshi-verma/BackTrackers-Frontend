@@ -1,5 +1,5 @@
 # React + Vite
-live link : https://back-trackers-frontend-4jbrxnq1y-1002dverma-5421s-projects.vercel.app/
+live link : (https://backtrackers.netlify.app/)
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

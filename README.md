@@ -15,4 +15,4 @@ If you are developing a production application, we recommend using TypeScript wi
 
 
 ## live link ##
-https://back-trackers-frontend-4jbrxnq1y-1002dverma-5421s-projects.vercel.app/
+https://backtrackers.netlify.app/

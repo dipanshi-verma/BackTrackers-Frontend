@@ -1,150 +1,138 @@
-import React, { useState } from "react";
-import { Menu, X } from "lucide-react";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+// src/Pages/Navbar.jsx
+import React, { useState, useEffect } from "react";
+import { Menu, X, LayoutDashboard, ShieldCheck, LogOut, LogIn } from "lucide-react";
+import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleScrollToSection = (id) => {
-    // Check if we are already on the home page
-    const isHomePage = window.location.pathname === '/' || window.location.pathname === '/home';
+  // Re-read user from localStorage whenever the route changes
+  // (covers login → redirect → navbar update)
+  useEffect(() => {
+    const raw = localStorage.getItem("user");
+    try { setUser(raw ? JSON.parse(raw) : null); } catch { setUser(null); }
+  }, [location.pathname]);
 
-    if (isHomePage) {
-      // If we are on the home page, just scroll
-      const element = document.getElementById(id);
-      if (element) {
-        // Offset for fixed header
-        const offset = -70; 
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = element.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        const offsetPosition = elementPosition + offset;
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    setIsOpen(false);
+    navigate("/");
+  };
 
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
-        setIsOpen(false);
-      }
+  const handleScrollTo = (id) => {
+    setIsOpen(false);
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
     } else {
-      // If we are not on the home page, navigate first and then scroll
-      navigate('/');
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) {
-          const offset = -70; 
-          const bodyRect = document.body.getBoundingClientRect().top;
-          const elementRect = element.getBoundingClientRect().top;
-          const elementPosition = elementRect - bodyRect;
-          const offsetPosition = elementPosition + offset;
-          
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-          });
-          setIsOpen(false);
-        }
-      }, 100);
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
-  const navLinks = [
-    { path: "/", label: "Home", isScrollLink: false },
-    { path: "/register", label: "Register", isScrollLink: false },
-    { path: "/list-items", label: "ListItems", isScrollLink: false },
-    { path: "/", label: "About", isScrollLink: true, scrollId: "about" },
-    { path: "/", label: "Contact", isScrollLink: true, scrollId: "contact" },
-    { path: "/chat", label: "ChatRoom", special: true, isScrollLink: false },
-  ];
+  const linkClass = ({ isActive }) =>
+    `relative text-sm font-medium transition-colors duration-200 ${
+      isActive ? "text-indigo-600" : "text-gray-600 hover:text-indigo-600"
+    }`;
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-md transition-all">
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-indigo-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+
           {/* Logo */}
-          <div className="flex-shrink-0 text-indigo-600 font-bold text-2xl cursor-pointer">
-            <Link to="/">Lost&Found</Link>
-          </div>
+          <Link to="/" className="text-indigo-600 font-extrabold text-xl tracking-tight">
+            Lost<span className="text-gray-800">&</span>Found
+          </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8 items-center">
-            {navLinks.map(({ path, label, special, isScrollLink, scrollId }) => (
-              isScrollLink ? (
-                <button
-                  key={scrollId}
-                  onClick={() => handleScrollToSection(scrollId)}
-                  className="relative text-gray-600 hover:text-indigo-600 transition duration-300 group"
-                >
-                  {label}
-                  <span className="absolute left-0 -bottom-1 w-0 group-hover:w-full transition-all h-[2px] bg-indigo-600"></span>
-                </button>
-              ) : (
-                <NavLink
-                  key={path}
-                  to={path}
-                  className={({ isActive }) =>
-                    `relative transition duration-300 ${
-                      special
-                        ? "bg-orange-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-orange-600"
-                        : "text-gray-600 hover:text-indigo-600"
-                    } ${isActive && !special ? "text-indigo-600 font-semibold" : ""}`
-                  }
-                >
-                  {!special && (
-                    <span className="group">
-                      {label}
-                      <span className="absolute left-0 -bottom-1 w-0 group-hover:w-full transition-all h-[2px] bg-indigo-600"></span>
-                    </span>
-                  )}
-                  {special && label}
-                </NavLink>
-              )
-            ))}
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-700 hover:text-indigo-600 focus:outline-none"
-            >
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-6">
+            <NavLink to="/" end className={linkClass}>Home</NavLink>
+            <NavLink to="/list-items" className={linkClass}>Browse Items</NavLink>
+            <button onClick={() => handleScrollTo("about")}
+              className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors">
+              About
             </button>
+            <button onClick={() => handleScrollTo("contact")}
+              className="text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors">
+              Contact
+            </button>
+
+            {user ? (
+              <>
+                {/* Chat — logged in only */}
+                <NavLink to="/chat"
+                  className="bg-orange-500 text-white text-sm font-semibold px-4 py-1.5 rounded-full hover:bg-orange-600 transition-colors">
+                  Chat Room
+                </NavLink>
+
+                {/* Admin badge */}
+                {user.role === "admin" && (
+                  <NavLink to="/admin"
+                    className="flex items-center gap-1.5 bg-purple-600 text-white text-sm font-semibold px-4 py-1.5 rounded-full hover:bg-purple-700 transition-colors">
+                    <ShieldCheck size={15} /> Admin
+                  </NavLink>
+                )}
+
+                {/* Dashboard */}
+                <NavLink to="/dashboard"
+                  className="flex items-center gap-1.5 bg-indigo-600 text-white text-sm font-semibold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition-colors">
+                  <LayoutDashboard size={15} /> {user.username}
+                </NavLink>
+
+                <button onClick={logout}
+                  className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-red-500 transition-colors">
+                  <LogOut size={15} /> Logout
+                </button>
+              </>
+            ) : (
+              <NavLink to="/register"
+                className="flex items-center gap-1.5 bg-indigo-600 text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-indigo-700 transition-colors">
+                <LogIn size={15} /> Login / Register
+              </NavLink>
+            )}
           </div>
+
+          {/* Mobile toggle */}
+          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-gray-700 hover:text-indigo-600">
+            {isOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden bg-white shadow-lg animate-slideDown">
-          <div className="flex flex-col space-y-4 p-4">
-            {navLinks.map(({ path, label, special, isScrollLink, scrollId }) => (
-              isScrollLink ? (
-                <button
-                  key={scrollId}
-                  onClick={() => handleScrollToSection(scrollId)}
-                  className="transition-colors duration-300 text-gray-600 hover:text-indigo-600 text-left w-full"
-                >
-                  {label}
-                </button>
-              ) : (
-                <NavLink
-                  key={path}
-                  to={path}
-                  onClick={() => setIsOpen(false)}
-                  className={({ isActive }) =>
-                    `transition-colors duration-300 ${
-                      special
-                        ? "bg-orange-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-orange-600 text-center"
-                        : "text-gray-600 hover:text-indigo-600"
-                    } ${isActive && !special ? "text-indigo-600 font-semibold" : ""}`
-                  }
-                >
-                  {label}
+        <div className="md:hidden bg-white border-t border-indigo-50 shadow-lg">
+          <div className="flex flex-col px-4 py-4 space-y-3">
+            <NavLink to="/" end className={linkClass} onClick={() => setIsOpen(false)}>Home</NavLink>
+            <NavLink to="/list-items" className={linkClass} onClick={() => setIsOpen(false)}>Browse Items</NavLink>
+            <button onClick={() => handleScrollTo("about")} className="text-left text-sm text-gray-600 hover:text-indigo-600">About</button>
+            <button onClick={() => handleScrollTo("contact")} className="text-left text-sm text-gray-600 hover:text-indigo-600">Contact</button>
+
+            {user ? (
+              <>
+                <NavLink to="/chat" className="text-sm font-semibold text-orange-600" onClick={() => setIsOpen(false)}>Chat Room</NavLink>
+                {user.role === "admin" && (
+                  <NavLink to="/admin" className="text-sm font-semibold text-purple-700 flex items-center gap-1" onClick={() => setIsOpen(false)}>
+                    <ShieldCheck size={14} /> Admin Panel
+                  </NavLink>
+                )}
+                <NavLink to="/dashboard" className="text-sm font-semibold text-indigo-700 flex items-center gap-1" onClick={() => setIsOpen(false)}>
+                  <LayoutDashboard size={14} /> Dashboard ({user.username})
                 </NavLink>
-              )
-            ))}
+                <button onClick={logout} className="text-left text-sm text-red-500 flex items-center gap-1">
+                  <LogOut size={14} /> Logout
+                </button>
+              </>
+            ) : (
+              <NavLink to="/register" className="text-sm font-semibold text-indigo-600 flex items-center gap-1" onClick={() => setIsOpen(false)}>
+                <LogIn size={14} /> Login / Register
+              </NavLink>
+            )}
           </div>
         </div>
       )}

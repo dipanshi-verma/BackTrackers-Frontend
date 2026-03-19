@@ -11,6 +11,7 @@ import Footer from './Pages/Footer.jsx'
 import ChatRoom from './Pages/ChatRoom.jsx'
 import Dashboard from './Pages/Dashboard.jsx'
 import AdminDashboard from './Pages/AdminDashboard.jsx'
+import AdminLogin from './Pages/AdminLogin.jsx'
 import ProtectedRoute from './Pages/ProtectedRoute.jsx'
 import AdminRoute from './Pages/AdminRoute.jsx'
 
@@ -37,6 +38,9 @@ function App() {
         <Route path="/dashboard" element={
           <ProtectedRoute><Dashboard /></ProtectedRoute>
         } />
+
+        {/* Admin login — public but separate from main login */}
+        <Route path="/admin-login" element={<AdminLogin />} />
 
         {/* Admin-only route */}
         <Route path="/admin" element={
